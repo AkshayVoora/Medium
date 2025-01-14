@@ -1,6 +1,7 @@
 # prod
 dist/
 .node_modules
+.wrangler.toml
 
 # dev
 .yarn/
@@ -20,7 +21,7 @@ node_modules/
 .env
 .env.production
 .dev.vars
-wrangler.toml
+
 
 # logs
 logs/
