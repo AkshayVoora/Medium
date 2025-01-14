@@ -3,6 +3,7 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { Hono } from 'hono';
 import { sign } from 'hono/jwt'
 
+
 const app = new Hono<{
 	Bindings: {
 		DATABASE_URL: string,
@@ -37,20 +38,19 @@ app.post('/api/v1/user/signin', async (c) => {
 		datasourceUrl: c.env?.DATABASE_URL	,
 	}).$extends(withAccelerate());
 
-  const body = await c.req.json();
+	const body = await c.req.json();
+	const user = await prisma.user.findUnique({
+		where: {
+			email: body.email
+		}
+	});
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email : body.email
-    }
-  })
-
-  if (!user) {
+	if (!user) {
 		c.status(403);
 		return c.json({ error: "user not found" });
 	}
 
-  const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+	const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
 	return c.json({ jwt });
 })
 
